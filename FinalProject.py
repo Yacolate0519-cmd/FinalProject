@@ -1,5 +1,6 @@
 from tkinter import ttk
 import tkinter as tk
+from tkinter import *
 
 if __name__ == '__main__':
     def update_preview(value = None):
@@ -20,20 +21,26 @@ if __name__ == '__main__':
     def clear_canvas():
         canvas.delete('all')
 
-    root = tk.Tk()
+    root = Tk()
     root = root
     root.title("畫布")
+    # root.grid_propagate(False)
     # root.geometry('700x400+1000+500')
     
     brush_size = tk.DoubleVar(value = 5)
-    red = tk.IntVar(value = 0)
-    green = tk.IntVar(value = 0)
-    blue = tk.IntVar(value = 0)
+    red = IntVar(value = 0)
+    green = IntVar(value = 0)
+    blue = IntVar(value = 0)
     
     
     #畫布
-    canvas = tk.Canvas(root , bg = 'white' , width = 800 , height = 800)
+    
+    canvas = Canvas(root , bg = 'white' , width = 800 , height = 800)
     canvas.grid(row = 0 , column = 0 , columnspan = 5 , pady = 10)
+    
+    #因為在macos上結果不如預期，所以直接指定畫布大小
+    canvas.config(width = 800 , height = 500)
+    
     #點擊左建開始繪畫
     canvas.bind("<B1-Motion>", paint)
     
@@ -41,21 +48,21 @@ if __name__ == '__main__':
     control_frame = tk.Frame(root)
     control_frame.grid(row = 1, column = 0 , rowspan = 3 , padx = 10)
     
-    ttk.Label(control_frame , text = '紅色' , font = ('Arial' , 20 , 'bold')).grid(row = 1 , column = 0 , padx = 5)
-    ttk.Scale(control_frame , from_ = 0 , to = 255 , variable = red  , orient = 'horizontal' , command = update_preview).grid(row = 1 , column = 1 , padx =5)
+    Label(control_frame , text = '紅色' , font = ('Arial' , 20 , 'bold')).grid(row = 1 , column = 0 , padx = 5)
+    Scale(control_frame , from_ = 0 , to = 255 , variable = red  , orient = 'horizontal' , command = update_preview).grid(row = 1 , column = 1 , padx =5)
     
-    ttk.Label(control_frame , text = '綠色' , font = ('Arial' , 20 , 'bold')).grid(row = 2 , column = 0 , padx = 5)
-    ttk.Scale(control_frame , from_ = 0 , to = 255 , variable = green  , orient = 'horizontal' , command = update_preview).grid(row = 2 , column = 1 , padx = 5)
+    Label(control_frame , text = '綠色' , font = ('Arial' , 20 , 'bold')).grid(row = 2 , column = 0 , padx = 5)
+    Scale(control_frame , from_ = 0 , to = 255 , variable = green  , orient = 'horizontal' , command = update_preview).grid(row = 2 , column = 1 , padx = 5)
     
-    ttk.Label(control_frame , text = '藍色' , font = ('Arial' , 20 , 'bold')).grid(row = 3 , column = 0 , padx = 5)
-    ttk.Scale(control_frame , from_ = 0 , to = 255 , variable = blue  , orient = 'horizontal' , command = update_preview).grid(row = 3 , column = 1 , padx = 5)
+    Label(control_frame , text = '藍色' , font = ('Arial' , 20 , 'bold')).grid(row = 3 , column = 0 , padx = 5)
+    Scale(control_frame , from_ = 0 , to = 255 , variable = blue  , orient = 'horizontal' , command = update_preview).grid(row = 3 , column = 1 , padx = 5)
     
-    tk.Label(root , text = '顏色預覽' , font = ('Arial' , 20 , 'bold')).grid(row = 4 , column = 0 , padx = 5)
+    Label(root , text = '顏色預覽' , font = ('Arial' , 20 , 'bold')).grid(row = 4 , column = 0 , padx = 5)
     
-    color_preview = tk.Label(root , bg = get_current_color() , width = 20 , height = 10)
+    color_preview = Label(root , bg = get_current_color() , width = 20 , height = 10)
     color_preview.grid(row = 4 , column = 1 , pady = 5)
     
-    clear_button = tk.Button(control_frame , text = '清除畫布' , command = clear_canvas , bg = 'red' , fg = 'white').grid(row = 5 , column = 0 , columnspan = 2 , pady = 10)
+    clear_button = Button(control_frame , text = '清除畫布' , command = clear_canvas , bg = 'red' , fg = 'white').grid(row = 5 , column = 0 , columnspan = 2 , pady = 10)
     update_preview()
     
     # app = Preview(root)
