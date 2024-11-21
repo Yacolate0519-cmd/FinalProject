@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import *
 
 if __name__ == '__main__':
-    def update_preview(value = None):
-        color_preview.config(bg = get_current_color())
+    # def update_preview(value = None):
+    #     color_preview.config(bg = get_current_color())
     
     def get_current_color():
         return f'#{red.get():02x}{green.get():02x}{blue.get():02x}'
