@@ -4,8 +4,22 @@ import kagglehub
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+import random
+from random import sample
 
 import os
+
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+        tf.config.experimental.set_memory_growth(gpus[0],True)
+        tf.config.set_visible_devices(gpus[0],'GPU')
+        print('使用GPU: ', gpus[0])
+    except RuntimeError as e:
+        print(e)
+else:
+    print("Cannot use GPU")
 
 # Download latest version
 path = kagglehub.dataset_download("sachinpatel21/az-handwritten-alphabets-in-csv-format")
@@ -23,15 +37,15 @@ pixels = data.iloc[: , 1 :]
 
 images = pixels.to_numpy().reshape(-1,28,28,1)
 
-# print("Images shape: ", images.shape)
-# print('Labels shape: ', labels.shape)
+print("Images shape: ", images.shape)
+print('Labels shape: ', labels.shape)
 
 images = images / 255.0
 
 x_train , x_test , y_train , y_test = train_test_split(images , labels , test_size = 0.2 , random_state = 42)
 
-# print("training data shape: ", x_train.shape,y_train.shape)
-# print('testing data shape: ',x_test.shape,y_test.shape)
+print("training data shape: ", x_train.shape,y_train.shape)
+print('testing data shape: ',x_test.shape,y_test.shape)
 
 model = models.Sequential([
     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
@@ -49,5 +63,6 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
-print(model.summary())
+
+
+model.save('mymodel.keras')
