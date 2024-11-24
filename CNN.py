@@ -66,9 +66,11 @@ model.compile(optimizer='adam',
 
 model.summary()
 
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 3)
+
+
 history = model.fit(x_train,y_train,epochs = 30,batch_size = 64, validation_split = 0.2)
 
-early_stopping = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 3)\
 
 
 plt.plot(history.history['accuracy'],label = 'training accuracy' , color = 'red')
