@@ -54,6 +54,7 @@ model = models.Sequential([
     layers.MaxPooling2D((2, 2)),
     layers.Conv2D(64, (3, 3), activation='relu'),
     layers.Flatten(),
+    layers.Dropout(0.5), #Droup
     layers.Dense(64, activation='relu'),
     layers.Dense(26, activation='softmax')  # 26 個字母分類
 ])
@@ -63,6 +64,16 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
+model.summary()
 
+history = model.fit(x_train,y_train,epochs = 30,batch_size = 64, validation_split = 0.2)
+
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 3)\
+
+
+plt.plot(history.history['accuracy'],label = 'training accuracy' , color = 'red')
+plt.plot(history.history['val_accuracy'],label = 'validation accuracy' , color = 'blue')
+
+plt.show()
 
 model.save('mymodel.keras')
