@@ -35,7 +35,9 @@ data = pd.read_csv(csv_files)
 labels = data['0']
 pixels = data.iloc[: , 1 :]
 
+
 images = pixels.to_numpy().reshape(-1,28,28,1)
+images = 255 - images
 
 print("Images shape: ", images.shape)
 print('Labels shape: ', labels.shape)
@@ -69,7 +71,7 @@ model.summary()
 early_stopping = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 3)
 
 
-history = model.fit(x_train,y_train,epochs = 30,batch_size = 64, validation_split = 0.2)
+history = model.fit(x_train,y_train,epochs = 30,batch_size = 64, validation_split = 0.2 )
 
 
 
