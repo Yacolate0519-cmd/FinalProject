@@ -37,6 +37,8 @@ pixels = data.iloc[: , 1 :]
 
 
 images = pixels.to_numpy().reshape(-1,28,28,1)
+
+#黑底白字轉白底黑字
 images = 255 - images
 
 print("Images shape: ", images.shape)

@@ -19,7 +19,7 @@ def preprocess_image(image_path):
     img_array = img_array.reshape(1,28,28,1)
     return img_array
 
-image_path = 'F.png'
+image_path = 'y.png'
 
 input_image = preprocess_image(image_path)
 predictions = model.predict(input_image)

@@ -57,3 +57,6 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 #顯示折線圖
 plt.show()
+
+
+model.save('mymodel.keras')
