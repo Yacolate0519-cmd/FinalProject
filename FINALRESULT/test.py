@@ -5,6 +5,7 @@ from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Conv2D , MaxPooling2D , Flatten , Dense , Dropout
 from keras.callbacks import EarlyStopping
+from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
 (x_train,y_train),(x_test,y_test) = mnist.load_data()
@@ -43,7 +44,7 @@ model = models.Sequential([
     layers.Dense(10, activation='softmax')
 ])
 
-
+optimizer = Adam(learning_rate = 0.001)
 model.compile(loss = 'categorical_crossentropy' , optimizer = 'adam' , metrics = ['accuracy'])
 
 early_stopping = EarlyStopping(monitor = 'val_loss' , patience = 5 , verbose = 1)

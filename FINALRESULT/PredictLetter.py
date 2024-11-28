@@ -14,7 +14,7 @@ def preprocess_image(image_path):
     img_array = img_array.reshape(1,28,28,1)
     return img_array
 
-input_path = '5.png'
+input_path = '3.png'
 input_image = preprocess_image(input_path)
 predictions = model.predict(input_image)
 predict_label = np.argmax(predictions)
