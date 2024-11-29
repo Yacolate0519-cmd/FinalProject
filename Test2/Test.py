@@ -1,96 +1,80 @@
+import numpy as np
 import tensorflow as tf
-from keras import layers , models
-from keras.datasets import mnist
-from keras.utils import np_utils
-from keras.models import Sequential
-from keras.layers import Conv2D , MaxPooling2D , Flatten , Dense , Dropout
-from keras.callbacks import EarlyStopping
-from keras.optimizers import Adam
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
 import matplotlib.pyplot as plt
-from keras.preprocessing.image import ImageDataGenerator
+# 將資料做一個歸一化的動作
+def preprocess(x, y):
+    x = tf.cast(x, dtype=tf.float32) / 255.
+    x = tf.reshape(x,[28,28,1])
+    y = tf.cast(y, dtype=tf.int32)
+    return x, y
 
-datagen = ImageDataGenerator(
-    rotation_range = 10,
-    width_shift_range = 0.1,
-    height_shift_range = 0.1,
-    zoom_range = 0.1,
-    shear_range = 0.1
-)
+batchs = 32
 
-(x_train,y_train),(x_test,y_test) = mnist.load_data()
+# 載入mnist 資料集 60000張訓練資料 , 10000張測試資料, 每張大小為 28x28
+(train_Data, train_Label), (test_Data, test_Label) = mnist.load_data()
+# 將訓練集資料打散
+db = tf.data.Dataset.from_tensor_slices((train_Data, train_Label))
+db = db.map(preprocess).shuffle(10000).batch(batchs)
 
-x_train = x_train.reshape(-1,28,28,1).astype('float32') / 255
-x_test= x_test.reshape(-1,28,28,1).astype('float32') / 255
-y_train = tf.keras.utils.to_categorical(y_train , 10)
-y_test = tf.keras.utils.to_categorical(y_test , 10)
+db_test = tf.data.Dataset.from_tensor_slices((test_Data, test_Label))
+db_test = db_test.map(preprocess).batch(batchs)
 
-
-x_train = 1 - x_train
-x_test = 1 - x_test
-
-datagen.fit(x_train)
-
-#原始模型
-# model = models.Sequential([
-#     layers.Conv2D(32,(3,3) , activation = 'relu' , input_shape = (28,28,1)),
-#     layers.MaxPooling2D(pool_size = (2 , 2)),
-#     layers.Conv2D(64,(3,3) , activation = 'relu'),
-#     layers.MaxPooling2D(pool_size = (2 , 2)),
-#     layers.Flatten(),
-#     layers.Dense(128,activation = 'relu'),
-#     layers.Dropout(0.5),
-#     layers.Dense(10,activation = "softmax")
-# ])
-
-#修改一
-# model = models.Sequential([
-#     layers.Conv2D(64, (3, 3), activation='relu', input_shape=(28, 28, 1)),
-#     layers.Conv2D(64, (3, 3), activation='relu'),
-#     layers.MaxPooling2D(pool_size=(2, 2)),
-#     layers.Conv2D(128, (3, 3), activation='relu'),
-#     layers.Conv2D(128, (3, 3), activation='relu'),
-#     layers.MaxPooling2D(pool_size=(2, 2)),
-#     layers.Flatten(),
-#     layers.Dense(256, activation='relu'),
-#     layers.Dropout(0.5),
-#     layers.Dense(10, activation='softmax')
-# ])
-
-#修改二
-model = models.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
-    layers.BatchNormalization(),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.BatchNormalization(),
-    layers.MaxPooling2D(pool_size=(2, 2)),
-    layers.Dropout(0.25),
-    
-    layers.Conv2D(128, (3, 3), activation='relu'),
-    layers.BatchNormalization(),
-    layers.Conv2D(128, (3, 3), activation='relu'),
-    layers.BatchNormalization(),
-    layers.MaxPooling2D(pool_size=(2, 2)),
-    layers.Dropout(0.5),
-    
-    layers.Flatten(),
-    layers.Dense(512, activation='relu'),
-    layers.BatchNormalization(),
-    layers.Dropout(0.5),
-    layers.Dense(10, activation='softmax')
+LeNet5Model = Sequential([
+    # 第一個卷積層，6個 5x5 卷積核,激勵函數為 relu
+    Conv2D(6,kernel_size=5,strides=1,padding='same',activation='relu'),
+    # 池化層大小 2x2, 步長 2
+    MaxPooling2D(pool_size=2,strides=2),
+    # 第二個卷積層，16個 5x5 卷積核, 步長為 1
+    Conv2D(16,kernel_size=5,strides=1,padding='same',activation='relu'),
+    # 池化層大小 2x2, 步長 2
+    MaxPooling2D(pool_size=2,strides=2),
+    # 打平層，方便全連接層處理
+    Flatten(),
+    # 全連接層，120 個節點, 激勵函數為 relu
+    Dense(120, activation='relu'),
+    # 全連接層，84 個節點, 激勵函數為 relu
+    Dense(84, activation='relu'),
+    # 全連接層(輸出)，10 個節點, 最後以機率方式呈現
+    Dense(10,activation='softmax')
 ])
 
-optimizer = Adam(learning_rate = 0.001)
-model.compile(loss = 'categorical_crossentropy' , optimizer = 'adam' , metrics = ['accuracy'])
+# 指定輸入數據維度
+LeNet5Model.build(input_shape=(None, 28, 28, 1))
+# 顯示參數量
+print(LeNet5Model.summary())
 
-early_stopping = EarlyStopping(monitor = 'val_loss' , patience = 5 , verbose = 1)
-history = model.fit(x_train , y_train , batch_size =64 , epochs = 30 , validation_data = (x_test , y_test) , callbacks = [early_stopping])
 
-test_loss , test_accuracy = model.evaluate(x_test , y_test)
-print(f'測試集損失:{test_loss:.4f},測試集準確率:{test_accuracy:.4f}')
+# 設定優化器
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
+# 配置模型  # label 為數字編碼
+LeNet5Model.compile(optimizer=optimizer,
+                    loss='sparse_categorical_crossentropy',  # 指定損失函數
+                    metrics=['accuracy'])
+# 訓練模型
+hist = LeNet5Model.fit(db,epochs=5, validation_data=db_test)
 
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.legend(['Train' , 'Test'] , loc = 'upper left')
+val_acc = hist.history['val_accuracy']
+acc = hist.history['accuracy']
+val_loss = hist.history['val_loss']
+loss = hist.history['loss']
+
+plt.plot(np.arange(len(val_loss)),val_loss,label='val_loss')
+plt.plot(np.arange(len(loss)),loss,label='loss')
+plt.ylim(0.1,0.8)
+plt.xlabel('EPOCHS')
+plt.ylabel('LOSS')
+plt.legend()
+plt.grid()
 plt.show()
 
-model.save("Test.keras")
+plt.plot(np.arange(len(val_acc)),val_acc,label='val_acc')
+plt.plot(np.arange(len(acc)),acc,label='acc')
+plt.ylim(0.1,1.0)
+plt.xlabel('EPOCHS')
+plt.ylabel('ACC')
+plt.legend()
+plt.grid()
+plt.show()
