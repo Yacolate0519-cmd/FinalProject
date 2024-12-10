@@ -15,7 +15,7 @@ def preprocess_image(image_path):
     return img_array
 
 # Paths to input images
-input_paths = ['0.png', '3.png', 'Test.png']
+input_paths = ['mypic.png']
 
 # Preprocess all images and predict
 predictions = []
