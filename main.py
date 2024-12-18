@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-import random
+from time import strftime
 
 dic = {'yacolate':'950519'}
 
@@ -29,6 +29,16 @@ def openTempWindow():
     canvas.place(x=0, y=0, relwidth=1, relheight=1)  # 設置 Canvas 作為背景
     create_gradient(canvas, 500, 400, "#FFEFDB", "#FFA07A") 
 
+    def update_time():
+        current_time = strftime('%Y-%m-%d %H:%M:%S')
+        label_time.config(text = current_time)
+        label_time.after(1000,update_time)
+    
+    label_time = Label(TempWindow , font = ('Arial' , 20))
+    label_time.place(relx = 0.5 , rely = 0.5 , anchor = 'n')
+    
+    update_time()
+
     
     snake_game_button = Button(TempWindow, text='貪吃蛇', font=('Arial', 20, 'bold'),
                                 command = open_snake_window , cursor = 'hand2')
@@ -39,7 +49,7 @@ def openTempWindow():
                               relief = RAISED , cursor = 'hand2')
     Draw_game_button.place(relx = 0.5 , rely = 0.5 , anchor = 'center')
 
-    close_button = Button(TempWindow, text='Close', font=('Arial', 15),
+    close_button = Button(TempWindow, text='Log Out', font=('Arial', 15),
                           command=lambda: closeWindow(TempWindow) , cursor = 'hand2')
     close_button.place(relx=0.5, rely=0.7, anchor="center")  # 定位第二個按鈕
 
@@ -48,17 +58,17 @@ def openTempWindow():
     
 #Temp Button package    
 def open_snake_window():
+    global snake_game_window
     TempWindow.withdraw()
     snake_game_window = Toplevel()
     snake_game_window.geometry('500x500')
     snake_game_window.title('Snake_Game')
     
-    btn = Button(snake_game_window , text = 'Close' , command = close_snake_window).pack()
+    btn = Button(snake_game_window , text = 'Close' , command = lambda : close_snake_window()).pack()
 
 def close_snake_window():
     global snake_game_window
     snake_game_window.destroy()
-    snake_game_window = None
     TempWindow.deiconify()
 
 # snake_game_window.mainloop()
@@ -71,16 +81,21 @@ def open_draw_window():
 def closeWindow(self):
     root.deiconify()
     self.destroy()
+    entry_username.delete(0 , END)
+    entry_password.delete(0,END)
 
 # 註冊
 def register():
     username = entry_username.get()
     password = entry_password.get()
-    if username in dic:
-        messagebox.showerror('ERROR',"Account already exits")
+    if username == '' or password == '':
+        messagebox.showerror('Error' , 'you need to entry something')
     else:
-        dic[username] = password
-    
+        if username in dic:
+            messagebox.showerror('ERROR',"Account already exits")
+        else:
+            dic[username] = password
+        
     
     
 #log in window package
