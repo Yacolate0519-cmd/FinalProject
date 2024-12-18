@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-
+import random
 
 dic = {'yacolate':'950519'}
 
@@ -53,157 +53,17 @@ def open_snake_window():
     snake_game_window.geometry('500x500')
     snake_game_window.title('Snake_Game')
     
-    Game_width = 500
-    Game_height = 500
-    canvas = Canvas(snake_game_window , width = Game_width , height = Game_height , bg = 'black')
-    canvas.pack(fill = 'both' , expand = True)
-    
-    title = Label(snake_game_window , text = 'Snake Game' , font = ("Arial" , 20) , fg = 'white' , bg = 'black').pack()
-    
-    Board_size = 20
-    speed = 100
-    body_length = 3
-    body_color = 'green'
-    food_color = 'red'
-    
-    snake_parts = []
-    for i in range(body_length):
-        x = 100 - i * Board_size
-        y = 100
-        part = canvas.create_rectangle(x , y , x + Board_size , y + Board_size , fill = 'green' , outline = '')
-        snake_parts.append(part)
-        
-        
-    direction = 'right'
-    
-    def move_snake():
-        global snake_parts , direction
-        head_coords = canvas.coords(snake_parts[0])
-        x1,y1,x2,y2 = head_coords
-        
-        if direction == 'right':
-            new_head = canvas.create_rectangle(x1 + Board_size , y1 , x2 + Board_size , y2 , fill = 'green' , outline = '')
-        elif direction == 'left':
-            new_head = canvas.create_rectangle(x1 - Board_size , y1 , x2 - Board_size , y2 , fill = 'green' , outline = '')
-        elif direction == 'up':
-            new_head = canvas.create_rectangle(x1  , y1 - Board_size , x2 , y2 - Board_size, fill = 'green' , outline = '')
-        elif direction == 'down':
-            new_head = canvas.create_rectangle(x1 , y1 + Board_size , x2  , y2 + Board_size, fill = 'green' , outline = '')
-    
-        snake_parts.insert(0,new_head)
-        canvas.delete(snake_parts.pop())
-        snake_game_window.after(speed , move_snake)
-    
-    def change_direction(event):
-        if event.keysym == 'Up' and direction != 'down':
-            direction = 'up'
-        elif event.keysym == 'Down' and direction != 'up':
-            direction = 'down'
-        elif event.keysym == 'Left' and direction != 'right':
-            direction = 'left'
-        elif event.keysym == 'Right' and direction != 'left':
-            direction = 'right'
-            
-    snake_game_window.bind('<Up>', change_direction)
-    snake_game_window.bind('<Down>', change_direction)
-    snake_game_window.bind('<Left>', change_direction)
-    snake_game_window.bind('<Right>', change_direction)
-    
-    move_snake()
-    
-    def close_snake_window():
-        global snake_game_window
-        snake_game_window
-        snake_game_window.destroy()
-        snake_game_window = None
-        TempWindow.deiconify()
-    
-    snake_game_window.mainloop()
+    btn = Button(snake_game_window , text = 'Close' , command = close_snake_window).pack()
+
+def close_snake_window():
+    global snake_game_window
+    snake_game_window.destroy()
+    snake_game_window = None
+    TempWindow.deiconify()
+
+# snake_game_window.mainloop()
     
     
-# def open_snake_window():
-#     global snake_game_window
-#     if snake_game_window is None or not snake_game_window.winfo_exists():  # 確保視窗不重複打開
-#         TempWindow.withdraw()
-#         snake_game_window = Toplevel()
-#         snake_game_window.geometry('500x500')
-#         snake_game_window.title('Snake_Game')
-
-#         Game_width = 500
-#         Game_height = 500
-#         Board_size = 20  # 每個區塊的大小
-#         speed = 100  # 蛇移動的速度
-
-#         # Canvas 遊戲背景
-#         canvas = Canvas(snake_game_window, width=Game_width, height=Game_height, bg='black')
-#         canvas.pack()
-
-#         # 蛇的初始參數
-#         body_length = 3
-#         snake_parts = []
-#         direction = 'right'
-
-#         # 初始蛇身
-#         for i in range(body_length):
-#             x = 100 - i * Board_size
-#             y = 100
-#             part = canvas.create_rectangle(x, y, x + Board_size, y + Board_size, fill='green', outline='')
-#             snake_parts.append(part)
-
-#         # 移動蛇的邏輯
-#         def move_snake():
-#             nonlocal direction
-#             head_coords = canvas.coords(snake_parts[0])  # 獲取蛇頭座標
-#             x1, y1, x2, y2 = head_coords
-
-#             # 根據方向移動蛇頭
-#             if direction == 'right':
-#                 new_head = canvas.create_rectangle(x1 + Board_size, y1, x2 + Board_size, y2, fill='green', outline='')
-#             elif direction == 'left':
-#                 new_head = canvas.create_rectangle(x1 - Board_size, y1, x2 - Board_size, y2, fill='green', outline='')
-#             elif direction == 'up':
-#                 new_head = canvas.create_rectangle(x1, y1 - Board_size, x2, y2 - Board_size, fill='green', outline='')
-#             elif direction == 'down':
-#                 new_head = canvas.create_rectangle(x1, y1 + Board_size, x2, y2 + Board_size, fill='green', outline='')
-
-#             # 加入新蛇頭並刪除蛇尾
-#             snake_parts.insert(0, new_head)
-#             canvas.delete(snake_parts.pop())
-
-#             # 每次移動後持續調用自己
-#             snake_game_window.after(speed, move_snake)
-
-#         # 控制蛇方向
-#         def change_direction(event):
-#             nonlocal direction
-#             if event.keysym == 'Up' and direction != 'down':
-#                 direction = 'up'
-#             elif event.keysym == 'Down' and direction != 'up':
-#                 direction = 'down'
-#             elif event.keysym == 'Left' and direction != 'right':
-#                 direction = 'left'
-#             elif event.keysym == 'Right' and direction != 'left':
-#                 direction = 'right'
-
-#         # 綁定鍵盤按鍵
-#         snake_game_window.bind('<Up>', change_direction)
-#         snake_game_window.bind('<Down>', change_direction)
-#         snake_game_window.bind('<Left>', change_direction)
-#         snake_game_window.bind('<Right>', change_direction)
-
-#         # 開始移動蛇
-#         move_snake()
-
-#         # 關閉視窗並回到主視窗
-#         def close_snake_window():
-#             global snake_game_window
-#             snake_game_window.destroy()
-#             snake_game_window = None
-#             TempWindow.deiconify()
-
-#         snake_game_window.protocol("WM_DELETE_WINDOW", close_snake_window)
-    
-
 
 def open_draw_window():
     return 
