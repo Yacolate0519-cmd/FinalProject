@@ -21,6 +21,15 @@ def login():
     else:
         messagebox.showerror('Error' , "Account doen't exists")
 
+# 註冊
+def register():
+    username = entry_username.get()
+    password = entry_password.get()
+    if username in dic:
+        messagebox.showerror('ERROR',"Account already exits")
+    else:
+        dic[username] = password
+
 def openTempWindow():
     global TempWindow
     root.withdraw()
@@ -59,17 +68,9 @@ def open_snake_window():
     
     btn = Button(snake_game_window , text = 'Close' , command = lambda : close_game_window(snake_game_window)).pack()
 
-#################################################################
 
-
-# #######################################################
-
-
-
-
-
-
-# snake_game_window.mainloop()
+########################################################
+#Draw game
 
 def open_draw_window():
     TempWindow.withdraw()
@@ -140,11 +141,9 @@ def open_draw_window():
 
     update_preview()
 
-
-##############################################################
     btn = Button(draw_window , text = 'Close' , command = lambda : close_game_window(draw_window)).pack()
     
-
+##############################################################
     
 def close_game_window(game_window):
     TempWindow.deiconify()
@@ -152,16 +151,11 @@ def close_game_window(game_window):
         
 def closeWindow(self):
     root.deiconify()
+    entry_username.delete(0,END)
+    entry_password.delete(0,END)
     self.destroy()
 
-# 註冊
-def register():
-    username = entry_username.get()
-    password = entry_password.get()
-    if username in dic:
-        messagebox.showerror('ERROR',"Account already exits")
-    else:
-        dic[username] = password
+
     
     
     
