@@ -32,6 +32,17 @@ class SnakeGame:
         # 綁定鍵盤事件
         self.root.bind("<KeyPress>", self.change_direction)
 
+        # 初始化 Restart 按鈕並隱藏
+        self.restart_button = tk.Button(
+            self.root, 
+            text="Restart", 
+            font=("Arial", 14), 
+            command=self.restart_game, 
+            bg="white"
+        )
+        self.restart_button.place(x=self.width / 2 - 40, y=self.height / 2 + 20)
+        self.restart_button.place_forget()  # 隱藏按鈕
+
         # 開始遊戲
         self.move_snake()
 
@@ -83,9 +94,17 @@ class SnakeGame:
             new_head_coords = (x1, y1 + self.board_size, x2, y2 + self.board_size)
 
         # 檢查是否碰到邊界或自己
-        if self.check_collision(new_head_coords):
-            self.game_over()
-            return
+        def check_collision(self, head_coords):
+            x1, y1, x2, y2 = head_coords
+            # 檢查邊界
+            if x1 < 0 or y1 < 0 or x2 > self.width or y2 > self.height:
+                return True
+            # 檢查蛇頭是否撞到自己（即蛇頭是否與蛇的身體重疊）
+            for part in self.snake[1:]:  # 排除蛇頭自身
+                if self.canvas.coords(part) == head_coords:
+                    return True
+            return False
+
 
         # 創建新蛇頭並加入蛇的身體
         new_head = self.canvas.create_rectangle(*new_head_coords, fill="green")
@@ -118,17 +137,37 @@ class SnakeGame:
 
     def check_food(self, head_coords):
         """ 檢查蛇是否吃到食物 """
-        return self.canvas.coords(self.food) == head_coords
+        food_coords = self.canvas.bbox(self.food)
+        head_x1 , head_y1 , head_x2 , head_y2 = head_coords
+        food_x1 , food_y1 , food_x2 , food_y2 = food_coords
+
+        return (head_x1 < food_x2 and head_x2 > food_x1 and head_y1 < food_y2 and head_y2 > food_y1)
 
     def game_over(self):
         """ 遊戲結束時顯示訊息 """
         self.canvas.create_text(
-            self.width / 2, self.height / 2,
+            self.width / 2, self.height / 2 - 20,
             text=f"Game Over\nYour Score: {self.score}",
             fill="white", font=("Arial", 20, "bold")
         )
-        self.root.after(3000, self.root.destroy)  # 3秒後關閉視窗
 
+        # 顯示 Restart 按鈕
+        self.restart_button.place(x=self.width / 2 - 40, y=self.height / 2 + 20)
+
+    def restart_game(self):
+        """ 重置遊戲狀態並重新開始 """
+        self.canvas.delete("all")
+        self.score = 0
+        self.direction = "Right"
+        self.snake = []
+        self.food = None
+
+        self.score_label.config(text=f"Score: {self.score}")
+        self.init_snake()
+        self.create_food()
+        self.move_snake()
+        # 隱藏 Restart 按鈕
+        self.restart_button.place_forget()
 
 # 遊戲啟動
 if __name__ == "__main__":
