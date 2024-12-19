@@ -195,27 +195,27 @@ create_gradient(canvas, 500, 400, "#FFEFDB", "#FFA07A")  # 淺橙色漸變
     
 
 # 主要框架
-frame = Frame(canvas, bg="white", bd=2, relief="flat")
+frame = Frame(canvas, bg="#FFEFDB", bd=2, relief="flat")
 frame.place(relx=0.5, rely=0.5, anchor="center", width=400, height=300)
 
 # 標題
-label_title = Label(frame, text="Sign in to your account", font=("Arial", 16, "bold"), bg="white", fg="#333")
+label_title = Label(frame, text="Sign in to your account", font=("Arial", 16, "bold"), bg="#FFEFDB", fg="#333")
 label_title.pack(pady=15)
 
 # 使用者名稱輸入框
-label_username = Label(frame, text="Email or username", font=("Arial", 10), bg="white", fg="#555")
+label_username = Label(frame, text="Email or username", font=("Arial", 10), bg="#FFEFDB", fg="#555")
 label_username.pack(anchor="w", padx=20)
 entry_username = Entry(frame, font=("Arial", 12))
 entry_username.pack(padx=20, pady=5, fill="x")
 
 # 密碼輸入框
-label_password = Label(frame, text="Password", font=("Arial", 10), bg="white", fg="#555")
+label_password = Label(frame, text="Password", font=("Arial", 10), bg="#FFEFDB", fg="#555")
 label_password.pack(anchor="w", padx=20)
 entry_password = Entry(frame, show="*", font=("Arial", 12))
 entry_password.pack(padx=20, pady=5, fill="x")
 
 # 忘記密碼
-label_forgot = Label(frame, text="Forgot password?", font=("Arial", 9), fg="#FF4500", bg="white", cursor="hand2")
+label_forgot = Label(frame, text="Forgot password?", font=("Arial", 9), fg="#FF4500", bg="#FFEFDB", cursor="hand2")
 label_forgot.pack(anchor="e", padx=20, pady=5)
 
 # 登入按鈕
@@ -223,10 +223,10 @@ btn_login = Button(frame, text="Log IN", font=("Arial", 12, "bold"), bg="#FF4500
 btn_login.pack(pady=10, fill="x", padx=20)
 
 # 註冊按鈕
-label_register = Label(frame, text="New to the system? ", font=("Arial", 10), bg="white", fg="#333")
+label_register = Label(frame, text="New to the system? ", font=("Arial", 10), bg="#FFEFDB", fg="#333")
 label_register.pack(side="left", padx=50, pady=10)
 
-btn_register = Button(frame, text="Register", font=("Arial", 10, "bold"), fg="#FF4500", bg="white", relief="flat", cursor="hand2", command=register)
+btn_register = Button(frame, text="Register", font=("Arial", 10, "bold"), fg="#FF4500", bg="#FFEFDB", relief="flat", cursor="hand2", command=register)
 btn_register.pack(side="right", padx=50)
 
 
