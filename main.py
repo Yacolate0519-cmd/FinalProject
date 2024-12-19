@@ -229,5 +229,5 @@ label_register.pack(side="left", padx=50, pady=10)
 btn_register = Button(frame, text="Register", font=("Arial", 10, "bold"), fg="#FF4500", bg="#FFEFDB", relief="flat", cursor="hand2", command=register)
 btn_register.pack(side="right", padx=50)
 
-
+print('Test')
 root.mainloop()
